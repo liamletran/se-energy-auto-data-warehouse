@@ -546,27 +546,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dbt-bootcamp"
-version = "1.11.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "dagster-dbt" },
-    { name = "dagster-webserver" },
-    { name = "dbt-autofix" },
-    { name = "dbt-core" },
-    { name = "dbt-snowflake" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "dagster-dbt", specifier = "~=0.28.0" },
-    { name = "dagster-webserver", specifier = "~=1.12.0" },
-    { name = "dbt-autofix", specifier = "~=0.18.0" },
-    { name = "dbt-core", specifier = "~=1.11.0" },
-    { name = "dbt-snowflake", specifier = "~=1.11.0" },
-]
-
-[[package]]
 name = "dbt-common"
 version = "1.37.3"
 source = { registry = "https://pypi.org/simple" }
@@ -712,6 +691,27 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ab/1b/6732371937040247a6f79bbf3d2a3093d9ce80e602c6cb30eb7a58994407/dbt_snowflake-1.11.3.tar.gz", hash = "sha256:7931a0ff7dbfcfc90d18a7ee4f80ea63ec45f921712249c90e87dedc8e85eaf4", size = 134852, upload-time = "2026-03-03T18:02:47.767Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/92/14/9a43d925307a517bce4fa638eb009940f7a80320ce0e7fa5c9e6099e6a36/dbt_snowflake-1.11.3-py3-none-any.whl", hash = "sha256:d77be933cf1f5bfa1b1366fcdeccec3b6037494f7cd164daea5cfe0076ac4690", size = 77723, upload-time = "2026-03-03T18:02:46.466Z" },
+]
+
+[[package]]
+name = "dbt-venv"
+version = "1.11.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "dagster-dbt" },
+    { name = "dagster-webserver" },
+    { name = "dbt-autofix" },
+    { name = "dbt-core" },
+    { name = "dbt-snowflake" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dagster-dbt", specifier = "~=0.28.0" },
+    { name = "dagster-webserver", specifier = "~=1.12.0" },
+    { name = "dbt-autofix", specifier = "~=0.18.0" },
+    { name = "dbt-core", specifier = "~=1.11.0" },
+    { name = "dbt-snowflake", specifier = "~=1.11.0" },
 ]
 
 [[package]]
