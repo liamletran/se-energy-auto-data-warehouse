@@ -1,7 +1,7 @@
 .PHONY: install deps run test build docs clean lint
 
 install:
-	pip install -r requirements.txt
+	uv sync
 
 deps:
 	dbt deps
