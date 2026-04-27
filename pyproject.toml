@@ -9,5 +9,8 @@ dependencies = [
     "dagster-dbt~=0.28.0",
     "dagster-webserver~=1.12.0",
     "requests",
-    "pandas"
+    "pandas",
+    "pyarrow"
 ]
+[tool.dagster]
+module_name = "ingestion.definitions"
