@@ -10,7 +10,8 @@ dependencies = [
     "dagster-webserver~=1.12.0",
     "requests",
     "pandas",
-    "pyarrow"
+    "pyarrow", 
+    "entsoe-py"
 ]
 [tool.dagster]
 module_name = "ingestion.definitions"
