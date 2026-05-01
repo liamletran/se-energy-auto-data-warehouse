@@ -29,5 +29,16 @@ class ENTSOEClient:
         df = self.client.query_generation(zone_id, start=start, end=end)
         if df is None or df.empty:
             return pd.DataFrame()
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = [" - ".join(filter(None, col)).strip() for col in df.columns]
 
-        return df
+        df = df.reset_index()
+        df = df.melt(
+            id_vars=["datetime"],
+            var_name="production_type",
+            value_name="actual_generation_mw",
+        )
+
+        df["bidding_zone"] = zone
+        df["ingested_at"] = pd.Timestamp.now(tz="UTC")
+        return df.sort_values(["datetime", "production_type"]).reset_index(drop=True)
