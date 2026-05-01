@@ -11,7 +11,8 @@ dependencies = [
     "requests",
     "pandas",
     "pyarrow", 
-    "entsoe-py"
+    "entsoe-py", 
+    "duckdb"
 ]
 [tool.dagster]
 module_name = "ingestion.definitions"
