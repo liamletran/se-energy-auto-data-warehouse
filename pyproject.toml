@@ -10,7 +10,8 @@ dependencies = [
     "dagster-webserver~=1.12.0",
     "requests",
     "pandas",
-    "pyarrow", 
+    "pyarrow",
+    "python-dotenv", 
     "entsoe-py", 
     "duckdb"
 ]

@@ -1,6 +1,7 @@
 from dagster import Definitions
-from ingestion.assets.entsoe_asset import (
-    entsoe_generation_raw,
-)
+from dotenv import load_dotenv
+from ingestion.assets.entsoe_asset import entsoe_generation_raw, entsoe_prices_raw
 
-defs = Definitions(assets=[entsoe_generation_raw])
+load_dotenv()
+
+defs = Definitions(assets=[entsoe_generation_raw, entsoe_prices_raw])

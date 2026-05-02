@@ -1,4 +1,4 @@
-from dagster import asset
+from dagster import asset, ScheduleDefinition, define_asset_job
 from ingestion.clients.entsoe_client import ENTSOEClient
 import pandas as pd
 import duckdb
@@ -78,4 +78,61 @@ def entsoe_generation_raw() -> str:
 
     con.close()
     print(f"  [DB] {row_count} rows loaded into entsoe_generation_raw")
+    return DB_PATH
+
+
+@asset
+def entsoe_prices_raw() -> str:
+    _ensure_db()
+    start, end = _window()
+    all_frames = []
+
+    for zone in client.bidding_zones.keys():
+        df = client.fetch_day_ahead_prices(start=start, end=end, zone=zone)
+        if df.empty:
+            print(f"  [WARN] No price data for zone {zone}")
+            print(f"({start.date()} → {end.date()})")
+            continue
+        all_frames.append(df)
+        print(f"  [OK] {zone}: {len(df)} rows fetched")
+
+    if not all_frames:
+        raise RuntimeError(
+            "No price data returned for any zone. Check API token and data availability."
+            f"({start.date()} → {end.date()})"
+        )
+
+    combined = pd.concat(all_frames, ignore_index=True)
+
+    con = duckdb.connect(DB_PATH)
+    con.execute(
+        """
+        CREATE TABLE IF NOT EXISTS entsoe_prices_raw (
+            datetime TIMESTAMPTZ,
+            price_eur_mwh DOUBLE,
+            bidding_zone VARCHAR,
+            ingested_at TIMESTAMPTZ
+        )
+        """
+    )
+
+    # Idempotent upsert: delete window data firstm then insert fresh data
+    # Safe to run multiple times a day without duplicates
+    con.execute(
+        """
+    DELETE FROM entsoe_prices_raw
+    WHERE datetime >= ? AND datetime < ?
+    """,
+        [start, end],
+    )
+
+    con.execute("INSERT INTO entsoe_prices_raw SELECT * FROM combined")
+
+    row_count = con.execute(
+        "SELECT COUNT(*) FROM entsoe_prices_rawWHERE datetime >= ? AND datetime < ?",
+        [start, end],
+    ).fetchone()[0]
+
+    con.close()
+    print(f"  [DB] {row_count} rows loaded into entsoe_prices_raw")
     return DB_PATH

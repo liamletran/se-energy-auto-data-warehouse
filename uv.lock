@@ -727,6 +727,7 @@ dependencies = [
     { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "pandas", version = "3.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pyarrow" },
+    { name = "python-dotenv" },
     { name = "requests" },
 ]
 
@@ -741,6 +742,7 @@ requires-dist = [
     { name = "entsoe-py" },
     { name = "pandas" },
     { name = "pyarrow" },
+    { name = "python-dotenv" },
     { name = "requests" },
 ]
 
