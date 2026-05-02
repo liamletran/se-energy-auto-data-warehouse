@@ -62,8 +62,7 @@ def entsoe_generation_raw() -> str:
     # Safe to run multiple times a day without duplicates
     con.execute(
         """
-    DELETE FROM entsoe_generation_raw
-    WHERE datetime >= ? AND datetime < ?
+    DELETE FROM entsoe_generation_raw WHERE datetime >= ? AND datetime < ?
     """,
         [start, end],
     )
@@ -72,7 +71,7 @@ def entsoe_generation_raw() -> str:
 
     row_count = con.execute(
         "SELECT COUNT(*) FROM entsoe_generation_raw"
-        "WHERE datetime >= ? AND datetime < ?",
+        " WHERE datetime >= ? AND datetime < ?",
         [start, end],
     ).fetchone()[0]
 
