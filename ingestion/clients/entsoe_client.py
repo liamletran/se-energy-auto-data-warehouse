@@ -42,3 +42,20 @@ class ENTSOEClient:
         df["bidding_zone"] = zone
         df["ingested_at"] = pd.Timestamp.now(tz="UTC")
         return df.sort_values(["datetime", "production_type"]).reset_index(drop=True)
+
+    def fetch_day_ahead_prices(
+        self, start: pd.Timestamp, end: pd.Timestamp, zone: str
+    ) -> pd.DataFrame:
+
+        zone_id = self.bidding_zones[zone]
+        series = self.client.query_day_ahead_prices(zone_id, start=start, end=end)
+
+        df = self.client.query_day_ahead_prices(zone_id, start=start, end=end)
+        if series is None or series.empty:
+            return pd.DataFrame()
+
+        df = series.reset_index()
+        df.columns = ["datetime", "price_eur_mwh"]
+        df["bidding_zone"] = zone
+        df["ingested_at"] = pd.Timestamp.now(tz="UTC")
+        return df.sort_values("date").reset_index(drop=True)
