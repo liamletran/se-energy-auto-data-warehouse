@@ -58,4 +58,4 @@ class ENTSOEClient:
         df.columns = ["datetime", "price_eur_mwh"]
         df["bidding_zone"] = zone
         df["ingested_at"] = pd.Timestamp.now(tz="UTC")
-        return df.sort_values("date").reset_index(drop=True)
+        return df.sort_values("datetime").reset_index(drop=True)
