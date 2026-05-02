@@ -129,7 +129,7 @@ def entsoe_prices_raw() -> str:
     con.execute("INSERT INTO entsoe_prices_raw SELECT * FROM combined")
 
     row_count = con.execute(
-        "SELECT COUNT(*) FROM entsoe_prices_rawWHERE datetime >= ? AND datetime < ?",
+        "SELECT COUNT(*) FROM entsoe_prices_raw WHERE datetime >= ? AND datetime < ?",
         [start, end],
     ).fetchone()[0]
 
