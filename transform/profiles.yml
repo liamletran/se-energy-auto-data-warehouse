@@ -1,4 +1,4 @@
-automotive_supply_chain_pipeline:
+transform:
   outputs:
     dev:
       type: duckdb
