@@ -13,7 +13,8 @@ dependencies = [
     "pyarrow",
     "python-dotenv", 
     "entsoe-py", 
-    "duckdb"
+    "duckdb", 
+    "dbt-duckdb"
 ]
 [tool.dagster]
 module_name = "ingestion.definitions"
