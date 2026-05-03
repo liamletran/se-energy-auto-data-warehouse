@@ -1,7 +1,0 @@
-transform:
-  outputs:
-    dev:
-      type: duckdb
-      account: duckdb/warehouse.duckdb
-      threads: 4
-  target: dev
