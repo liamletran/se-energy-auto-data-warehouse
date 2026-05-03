@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: warehouse
+    schema: main
+    tables:
+      - name: generation_raw
+        identifier: entsoe_generation_raw
