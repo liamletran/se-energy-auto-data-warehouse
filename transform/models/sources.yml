@@ -5,3 +5,6 @@ sources:
     tables:
       - name: generation_raw
         identifier: entsoe_generation_raw
+
+      - name: prices_raw
+        identifier: entsoe_prices_raw
