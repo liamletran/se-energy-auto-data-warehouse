@@ -1,49 +1,63 @@
-from dotenv import load_dotenv
 import os
+import sys
 import requests
-from utils.fetch_api_retry import retry
 import pandas as pd
 
-load_dotenv()
 
-# live?access_key=YOUR_KEY&symbols=USD,EUR
-# historical?access_key=YOUR_KEY&date=2022-01-01
+from utils.fetch_api_retry import retry
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 
 class ExchangeRateClient:
-    BASE_URL = "https://api.exchangerate.host/"
-
-    def __init__(self):
-        self.api_key = os.getenv("EXCHANGERATE_KEY")
-        if not self.api_key:
-            raise ValueError("EXCHANGERATE_KEY not found in environment")
-        self.headers = {"apikey": self.api_key}
+    BASE_URL = "https://api.frankfurter.dev/v2"
 
     def _get(self, endpoint: str, params: dict):
-        url = f"{self.BASE_URL}{endpoint}"
-        response = retry(
-            lambda: requests.get(url, headers=self.headers, params=params, timeout=30)
-        )
+        url = f"{self.BASE_URL}/{endpoint}"
+        response = retry(lambda: requests.get(url, params=params, timeout=30))
         response.raise_for_status()
-        data = response.json()
-        if not data.get("success", True):
-            raise RuntimeError(f"API error: {data}")
-        return data
+        return response.json()
 
-    def fetch_latest(self, base="EUR", symbols="SEK"):
-        params = {"base": base, "symnbols": symbols}
-        data = self._get("latest", params)
-        df = pd.DataFrame(
-            {
-                "date": data["date"],
-                "base": base,
-                "target": symbols,
-                "rate": data["rates"][symbols],
-            }
+    def fetch_latest(self, base="EUR", target="SEK") -> pd.DataFrame:
+        data = self._get(f"rate/{base}/{target}")
+        return pd.DataFrame(
+            [
+                {
+                    "date": pd.to_datetime(data["date"]),
+                    "base_currency": data["base"],
+                    "target_currency": data["quote"],
+                    "rate": data["rate"],
+                    "ingested_at": pd.Timestamp.now(tz="UTC"),
+                }
+            ]
         )
-        return df
 
     def fetch_timeseries(
-        self, start_date: str, end_date: str, base="EUR", symbols="SEK"
-    ):
-        return None
+        self, start_date: str, end_date: str, base="EUR", target="SEK"
+    ) -> pd.DataFrame:
+
+        data = self._get(
+            "rates",
+            {
+                "from": start_date,
+                "to": end_date,
+                "base": base,
+                "quotes": target,
+            },
+        )
+
+        df = pd.DataFrame(data)
+        df["date"] = pd.to_datetime(df["date"])
+        df["ingested_at"] = pd.Timestamp.now(tz="UTC")
+
+        df = df.rename(columns={"base": "base_currency", "quote": "target_currency"})
+        return df.sort_values("date").reset_index(drop=True)
+
+
+if __name__ == "__main__":
+    client = ExchangeRateClient()
+
+    df = client.fetch_timeseries("2025-05-04", "2026-05-04")
+    os.makedirs("data/exchangerate", exist_ok=True)
+    df.to_csv("data/exchangerate/exchangerate_data.csv", index=False)
+    print(f"  {len(df)} rows → data/exchangerate/exchangerate_data.csv ✓")
