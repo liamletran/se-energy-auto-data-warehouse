@@ -9,10 +9,10 @@ from utils.fetch_api_retry import retry
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 
-class ExchangeRateClient:
+class FrankfurterClient:
     BASE_URL = "https://api.frankfurter.dev/v2"
 
-    def _get(self, endpoint: str, params: dict):
+    def _get(self, endpoint: str, params: dict = {}) -> any:
         url = f"{self.BASE_URL}/{endpoint}"
         response = retry(lambda: requests.get(url, params=params, timeout=30))
         response.raise_for_status()
@@ -52,12 +52,3 @@ class ExchangeRateClient:
 
         df = df.rename(columns={"base": "base_currency", "quote": "target_currency"})
         return df.sort_values("date").reset_index(drop=True)
-
-
-if __name__ == "__main__":
-    client = ExchangeRateClient()
-
-    df = client.fetch_timeseries("2025-05-04", "2026-05-04")
-    os.makedirs("data/exchangerate", exist_ok=True)
-    df.to_csv("data/exchangerate/exchangerate_data.csv", index=False)
-    print(f"  {len(df)} rows → data/exchangerate/exchangerate_data.csv ✓")

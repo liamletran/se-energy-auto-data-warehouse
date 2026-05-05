@@ -468,6 +468,19 @@ wheels = [
 ]
 
 [[package]]
+name = "dagster-duckdb"
+version = "0.28.20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dagster" },
+    { name = "duckdb" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/de/f1a8f106cc1a6bc95de9c430de18c64871a7d703623441ccb4edd967e720/dagster_duckdb-0.28.20.tar.gz", hash = "sha256:9c2a0782f5dc54c92ffde3a2bd180aec6488b7fac0aafd74fe07ab2e078e7334", size = 10841, upload-time = "2026-03-19T17:31:53.888Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/3f/7c3989f004d4c22a2ed425adaa54dd94fa0f754c6c712a6d249e6a5647b0/dagster_duckdb-0.28.20-py3-none-any.whl", hash = "sha256:1fe5587a557928b5bf3aa96095c34e3d0c1c22f5a668f8023407207e98629c6f", size = 10310, upload-time = "2026-03-19T17:31:52.67Z" },
+]
+
+[[package]]
 name = "dagster-graphql"
 version = "1.12.20"
 source = { registry = "https://pypi.org/simple" }
@@ -733,6 +746,7 @@ version = "1.11.0"
 source = { virtual = "." }
 dependencies = [
     { name = "dagster-dbt" },
+    { name = "dagster-duckdb" },
     { name = "dagster-webserver" },
     { name = "dbt-autofix" },
     { name = "dbt-core" },
@@ -750,6 +764,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "dagster-dbt", specifier = "~=0.28.0" },
+    { name = "dagster-duckdb" },
     { name = "dagster-webserver", specifier = "~=1.12.0" },
     { name = "dbt-autofix", specifier = "~=0.18.0" },
     { name = "dbt-core", specifier = "~=1.11.0" },

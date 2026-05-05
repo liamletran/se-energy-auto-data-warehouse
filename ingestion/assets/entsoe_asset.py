@@ -1,12 +1,12 @@
-from dagster import asset, ScheduleDefinition, define_asset_job
+from dagster import asset
 from ingestion.clients.entsoe_client import ENTSOEClient
+from utils.ensure_db import ensure_db
 import pandas as pd
 import duckdb
-import os
+
 
 client = ENTSOEClient()
-
-DB_PATH = "duckdb/warehouse.duckdb"
+DB_PATH = ensure_db()
 
 
 def _window() -> tuple[pd.Timestamp, pd.Timestamp]:
@@ -18,13 +18,8 @@ def _window() -> tuple[pd.Timestamp, pd.Timestamp]:
     return start, end
 
 
-def _ensure_db():
-    os.makedirs("duckdb", exist_ok=True)
-
-
 @asset
 def entsoe_generation_raw() -> str:
-    _ensure_db()
     start, end = _window()
     all_frames = []
 
@@ -82,7 +77,7 @@ def entsoe_generation_raw() -> str:
 
 @asset
 def entsoe_prices_raw() -> str:
-    _ensure_db()
+    # DB_PATH = ensure_db()
     start, end = _window()
     all_frames = []
 

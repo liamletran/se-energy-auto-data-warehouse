@@ -14,7 +14,8 @@ dependencies = [
     "python-dotenv", 
     "entsoe-py", 
     "duckdb", 
-    "dbt-duckdb"
+    "dbt-duckdb", 
+    "dagster_duckdb"
 ]
 [tool.dagster]
 module_name = "ingestion.definitions"
