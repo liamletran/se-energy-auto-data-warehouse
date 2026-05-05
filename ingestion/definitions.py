@@ -29,7 +29,7 @@ entsoe_daily_schedule = ScheduleDefinition(
 fx_daily_job = define_asset_job("fx_daily_ingest", selection=[fx_rates_daily])
 fx_daily_schedule = ScheduleDefinition(
     job=fx_daily_job,
-    cron_schedule="30 14 * * *",  # 14:30 UTC
+    cron_schedule="00 18 * * *",  # 18:00 UTC
     execution_timezone="Europe/Stockholm",
 )
 
