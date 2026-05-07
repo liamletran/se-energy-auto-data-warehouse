@@ -523,6 +523,19 @@ wheels = [
 ]
 
 [[package]]
+name = "dagster-slack"
+version = "0.28.20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dagster" },
+    { name = "slack-sdk" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/39/5e675fe2f6dd8f66144198da088a1caf769528bfd680c7d6dee580db52bf/dagster_slack-0.28.20.tar.gz", hash = "sha256:0f4a9dd3bb78fd7d341018f96458814f3db09f028d838258bd9330a187b0dbc6", size = 11192, upload-time = "2026-03-19T17:34:56.198Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/fa/355f66b57aa9f56540822886ef2ec0db9cbf3f0879a344722909776fedcc/dagster_slack-0.28.20-py3-none-any.whl", hash = "sha256:098ae72608aa2b31affd13399ddc8bfc417796fcb987338eb11dc45f4ed9ecec", size = 10900, upload-time = "2026-03-19T17:34:55.092Z" },
+]
+
+[[package]]
 name = "dagster-webserver"
 version = "1.12.20"
 source = { registry = "https://pypi.org/simple" }
@@ -747,6 +760,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "dagster-dbt" },
     { name = "dagster-duckdb" },
+    { name = "dagster-slack" },
     { name = "dagster-webserver" },
     { name = "dbt-autofix" },
     { name = "dbt-core" },
@@ -765,6 +779,7 @@ dependencies = [
 requires-dist = [
     { name = "dagster-dbt", specifier = "~=0.28.0" },
     { name = "dagster-duckdb" },
+    { name = "dagster-slack" },
     { name = "dagster-webserver", specifier = "~=1.12.0" },
     { name = "dbt-autofix", specifier = "~=0.18.0" },
     { name = "dbt-core", specifier = "~=1.11.0" },
@@ -2651,6 +2666,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "slack-sdk"
+version = "3.41.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/35/fc009118a13187dd9731657c60138e5a7c2dea88681a7f04dc406af5da7d/slack_sdk-3.41.0.tar.gz", hash = "sha256:eb61eb12a65bebeca9cb5d36b3f799e836ed2be21b456d15df2627cfe34076ca", size = 250568, upload-time = "2026-03-12T16:10:11.381Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a1/df/2e4be347ff98281b505cc0ccf141408cdd25eb5ca9f3830deb361b2472d3/slack_sdk-3.41.0-py2.py3-none-any.whl", hash = "sha256:bb18dcdfff1413ec448e759cf807ec3324090993d8ab9111c74081623b692a89", size = 313885, upload-time = "2026-03-12T16:10:09.811Z" },
 ]
 
 [[package]]
