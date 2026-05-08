@@ -10,6 +10,7 @@ WITH source AS (
         ingested_at AS generation_ingested_at
     FROM source
     QUALIFY ROW_NUMBER() OVER (PARTITION BY generation_datetime_utc, production_type, bidding_zone_id ORDER BY generation_datetime_utc) = 1
+    ORDER BY generation_datetime_utc
 )
 
 SELECT * 
