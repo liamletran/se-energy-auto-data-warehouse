@@ -6,6 +6,7 @@ def retry(
     max_attempts: int = 3,
     wait_seconds: int = 30,
     retry_exceptions: Tuple[Type[Exception], ...] = (Exception,),
+    provider_name: str = "Unknown",
 ):
     for attempt in range(1, max_attempts + 1):
         try:
