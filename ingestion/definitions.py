@@ -1,50 +1,105 @@
-from utils.ensure_db import ensure_db
-from dagster_duckdb import DuckDBResource
+import os
+from dotenv import load_dotenv
 from dagster import (
+    sensor,
+    RunRequest,
+    SensorEvaluationContext,
     Definitions,
-    ScheduleDefinition,
+    load_assets_from_modules,
     define_asset_job,
-    in_process_executor,
+    ScheduleDefinition,
+    AssetSelection,
+    EnvVar,
+    run_status_sensor,
+    RunStatusSensorContext,
+    DagsterRunStatus,
 )
-from ingestion.assets.entsoe_asset import entsoe_generation_raw, entsoe_prices_raw
-from ingestion.assets.frankfurter_asset import fx_rates_daily, fx_rates_backfill
+from dagster_slack import SlackResource
+from dagster_duckdb import DuckDBResource
+from .clients.scb_client import SCBClient
+from .assets import entsoe_asset, frankfurter_asset, scb_asset
+from utils import ensure_db
 
 
 DB_PATH = ensure_db()
-duckdb_resource = DuckDBResource(database=DB_PATH)
+
+# Automatically group all @asset in those files together
+all_assets = load_assets_from_modules([entsoe_asset, frankfurter_asset, scb_asset])
 
 
-# ENTSO-E daily job
+# ENTSO-E daily job and schedule
 entsoe_daily_job = define_asset_job(
-    "entsoe_daily_ingest", selection=[entsoe_generation_raw, entsoe_prices_raw]
+    "entsoe_daily_ingest", selection=AssetSelection.groups("entsoe")
 )
 entsoe_daily_schedule = ScheduleDefinition(
     job=entsoe_daily_job,
-    cron_schedule="30 14 * * *",  # 14:30 UTC
+    cron_schedule="30 14 * * *",
     execution_timezone="Europe/Stockholm",
 )
 
 
-# Frankfurter daily job
-fx_daily_job = define_asset_job("fx_daily_ingest", selection=[fx_rates_daily])
+# Frankfurter daily job and schedule
+fx_daily_job = define_asset_job(
+    "fx_daily_ingest", selection=AssetSelection.groups("forex")
+)
 fx_daily_schedule = ScheduleDefinition(
-    job=fx_daily_job,
-    cron_schedule="00 18 * * *",  # 18:00 UTC
-    execution_timezone="Europe/Stockholm",
+    job=fx_daily_job, cron_schedule="00 18 * * *", execution_timezone="Europe/Stockholm"
 )
 
 
-# Definitions for all jobs
+# SCB job and sensor
+scb_ingest_job = define_asset_job(
+    "scb_ingest_job", selection=AssetSelection.groups("scb")
+)
+
+
+@sensor(
+    job=scb_ingest_job, minimum_interval_seconds=14400
+)  # Change later to slower changing time interval. Ideally 4 days= 14400s
+def scb_new_data_sensor(context: SensorEvaluationContext):
+    client = SCBClient()
+    try:
+        latest_period = client.get_latest_period()
+    except Exception as e:
+        context.log.error(f"Cannot check latest date updated from SCB API: {e}")
+        return
+    last_processed_period = context.cursor
+
+    if latest_period != last_processed_period:
+        context.log.info(f"Detected new data for {latest_period}.")
+        context.update_cursor(latest_period)
+        yield RunRequest(run_key=latest_period, run_config={})
+    else:
+        context.log.info(
+            f"There is no new data. Currently updated month is still {latest_period}."
+        )
+
+
+# FAILURE ALERT VIA SLACK MESSAGES
+
+load_dotenv()
+SLACK_TOKEN = os.getenv("SLACK_TOKEN")
+
+
+@run_status_sensor(run_status=DagsterRunStatus.FAILURE)
+def slack_on_failure_sensor(context: RunStatusSensorContext, slack: SlackResource):
+    message = (
+        f"🔴 *Run failed!* \n"
+        f"Job: {context.dagster_run.job_name}\n"
+        f"Run ID: `{context.dagster_run.run_id}`\n"
+        f"Failed run alert! Check it out here: "
+        f"http://localhost:3000/runs/{context.dagster_run.run_id}"
+    )
+    slack.get_client().chat_postMessage(channel="#dev-alerts", text=message)
+
+
 defs = Definitions(
-    assets=[
-        entsoe_generation_raw,
-        entsoe_prices_raw,
-        fx_rates_daily,
-        fx_rates_backfill,
-    ],
+    assets=all_assets,
+    jobs=[entsoe_daily_job, fx_daily_job, scb_ingest_job],
     schedules=[entsoe_daily_schedule, fx_daily_schedule],
+    sensors=[scb_new_data_sensor, slack_on_failure_sensor],
     resources={
-        "duckdb": duckdb_resource,
+        "duckdb": DuckDBResource(database=DB_PATH),
+        "slack": SlackResource(token=EnvVar("SLACK_TOKEN")),
     },
-    executor=in_process_executor,
 )
