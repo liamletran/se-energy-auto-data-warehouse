@@ -1,29 +1,7 @@
-import time
-from entsoe import EntsoePandasClient
-import pandas as pd
 import os
-
-
-def _retry(fn, max_attempts=3, wait_seconds=30):
-    for attempt in range(1, max_attempts + 1):
-        try:
-            return fn()
-        except Exception as e:
-            if "503" in str(e) or "Service Unavailable" in str(e):
-                if attempt < max_attempts:
-                    print(
-                        f"  [RETRY] 503 from ENTSO-E — "
-                        f"attempt {attempt}/{max_attempts}, "
-                        f"waiting {wait_seconds}s..."
-                    )
-                    time.sleep(wait_seconds)
-                else:
-                    raise RuntimeError(
-                        f"ENTSO-E API unavailable after {max_attempts} attempts. "
-                        f"Will retry at next scheduled run."
-                    ) from e
-            else:
-                raise  # Non-503 errors fail immediately
+import pandas as pd
+from utils import retry
+from entsoe import EntsoePandasClient
 
 
 class ENTSOEClient:
@@ -45,7 +23,7 @@ class ENTSOEClient:
         zone_id = self.bidding_zones[zone]
 
         # Wrap API call with retry
-        df = _retry(lambda: self.client.query_generation(zone_id, start=start, end=end))
+        df = retry(lambda: self.client.query_generation(zone_id, start=start, end=end))
 
         if df is None or df.empty:
             return pd.DataFrame()
@@ -78,7 +56,7 @@ class ENTSOEClient:
     ) -> pd.DataFrame:
         zone_id = self.bidding_zones[zone]
 
-        series = _retry(
+        series = retry(
             lambda: self.client.query_day_ahead_prices(zone_id, start=start, end=end)
         )
 
