@@ -1,0 +1,8 @@
+production_type,display_name,is_renewable
+Hydro Run-of-river and poundage,Hydro,True
+Hydro Water Reservoir,Hydro Storage,True
+Nuclear,Nuclear,False
+Solar,Solar,True
+Wind Onshore,Wind Onshore,True
+Fossil Gas,Natural Gas,False
+Biomass,Biomass,True
