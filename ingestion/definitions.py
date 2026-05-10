@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from dotenv import load_dotenv
 from dagster import (
     sensor,
@@ -13,18 +14,20 @@ from dagster import (
     run_status_sensor,
     RunStatusSensorContext,
     DagsterRunStatus,
+    AssetExecutionContext,
+    AssetIn,
+    asset,
 )
 from dagster_slack import SlackResource
 from dagster_duckdb import DuckDBResource
 from .clients.scb_client import SCBClient
 from .assets import entsoe_asset, frankfurter_asset, scb_asset
+from pathlib import Path
+from dagster_dbt import DbtProject, dbt_assets, DbtCliResource
 from utils import ensure_db
 
 
 DB_PATH = ensure_db()
-
-# Automatically group all @asset in those files together
-all_assets = load_assets_from_modules([entsoe_asset, frankfurter_asset, scb_asset])
 
 
 # ENTSO-E daily job and schedule
@@ -93,6 +96,26 @@ def slack_on_failure_sensor(context: RunStatusSensorContext, slack: SlackResourc
     slack.get_client().chat_postMessage(channel="#dev-alerts", text=message)
 
 
+# dbt assets
+DBT_PROJECT_PATH = Path(__file__).joinpath("..", "..", "transform").resolve()
+dbt_project = DbtProject(project_dir=DBT_PROJECT_PATH)
+dbt_project.prepare_if_dev()
+
+
+@dbt_assets(manifest=dbt_project.manifest_path)
+def dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
+    yield from dbt.cli(["build"], context=context).stream()
+
+
+@asset(ins={"fx_raw": AssetIn(key_prefix=["main"])})
+def fx_report(fx_raw: pd.DataFrame):
+    print(f"{len(fx_raw)}")
+
+
+# Automatically group all @asset in those files together
+python_assets = load_assets_from_modules([entsoe_asset, frankfurter_asset, scb_asset])
+all_assets = [*python_assets, dbt_assets]
+
 defs = Definitions(
     assets=all_assets,
     jobs=[entsoe_daily_job, fx_daily_job, scb_ingest_job],
@@ -101,5 +124,6 @@ defs = Definitions(
     resources={
         "duckdb": DuckDBResource(database=DB_PATH),
         "slack": SlackResource(token=EnvVar("SLACK_TOKEN")),
+        "dbt": DbtCliResource(project_dir=dbt_project),
     },
 )
