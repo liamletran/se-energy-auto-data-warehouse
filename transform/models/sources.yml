@@ -8,3 +8,14 @@ sources:
 
       - name: prices_raw
         identifier: entsoe_prices_raw
+
+      - name: ipi_raw
+        identifier: scb_ipi_raw
+
+      - name: fx_raw
+        identifier: fx_rates_raw
+
+
+  #- name: dagster
+   # tables:
+    #  - name: scb_ipi_raw
