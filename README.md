@@ -33,9 +33,9 @@ The pipeline is designed to be modular, scalable, and maintainable, allowing for
 
 
 ## Data Lineage & Layers
-Below is the end-to-end data flow progress within our DuckDB analytical warehouse:
+Below is the end-to-end data flow progress in the DuckDB analytical warehouse:
 
-![Data Flow Progress](overview_pipeline-dbt.gif)
+![DataFlowProgress](images/overview_pipeline-dbt.gif)
 
 ### Layer Breakdown & Modeling Logic:
 
@@ -59,7 +59,7 @@ Below is the end-to-end data flow progress within our DuckDB analytical warehous
    - **`mart_energy_cost_simulation`**: Powers the dynamic ROI calculator for factory peak-shifting scenarios.
    - **`mart_industrial_energy_correlation`**: Provides the analytical foundation to discover correlations between manufacturing output (IPI) and power grid dynamics.
 
-![DataFlowProgress](images/overview_pipeline-dbt.gif)
+
 
 
 ## Stack
