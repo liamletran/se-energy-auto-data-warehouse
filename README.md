@@ -1,7 +1,6 @@
 # Swedish Energy Prices and Automotive Industry Analytics
 
-> End-to-end analytics pipeline combining hourly ENTSO-E to model energy cost exposure for Swedish industrial manufacturers.
-> An end-to-end Analytics Pipeline correlating Nordic electricity price volatility (SE3) with the Swedish automotive supply chain index to model and optimize industrial energy cost exposure.
+> An end-to-end Analytics Pipeline correlating hourly ENTSO-E with the Swedish automotive industrial production index (IPI) to model energy cost exposure for Swedish industrial automotive manufacturers and optimize industrial energy cost exposure.
 
 ## Business Context
 
@@ -120,7 +119,7 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 - **Python 3.12+** (managed via `uv`)
 - **Node.js 22+** (required for the Evidence.dev compiler)
 
-### 1. Clone & Environment Setup
+### Clone & Environment Setup
 Clone the repository and install the unified dependencies for both the data pipeline and the frontend dashboard:
 ```bash
 # Clone the repository
