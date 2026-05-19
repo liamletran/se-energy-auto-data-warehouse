@@ -1,10 +1,6 @@
 # Nordic Energy Market Analytics Pipeline
 
-> End-to-end analytics pipeline combining hourly ENTSO-E 
-> to model energy cost exposure for Swedish industrial manufacturers.
-
-
-
+> End-to-end analytics pipeline combining hourly ENTSO-E to model energy cost exposure for Swedish industrial manufacturers.
 
 
 ## Business Context
@@ -16,11 +12,11 @@ The Nordic energy market is characterized by high volatility in electricity pric
 
 ## Architecture
 
-The pipeline follows a modern **ELT (Extract-Load-Transform)** pattern:
+The pipeline follows a modern **ELT** pattern: 
 
 1. **Ingestion (Extract & Load)**: 
 
-Python + Dagster fetches hourly data from APIs, reshapes it (Wide to Long), and loads it into DuckDB Raw schema.
+Python + Dagster fetches hourly data from APIs, reshapes it (Wide to Long), and loads it into DuckDB Raw schema. There is light transformation at this stage to ensure data is in a queryable format, but the core business logic is reserved for dbt.
 
 2. **Transformation (Transform)**: 
 
@@ -33,6 +29,38 @@ Dagster coordinates the entire flow, ensuring dbt runs only after successful ing
 The pipeline is designed to be modular, scalable, and maintainable, allowing for easy addition of new data sources or transformation logic as business needs evolve.
 
 ![Pipeline](images/overview_pipeline-Page-1.gif)
+
+
+
+## Data Lineage & Layers
+Below is the end-to-end data flow progress within our DuckDB analytical warehouse:
+
+![Data Flow Progress](overview_pipeline-dbt.gif)
+
+### Layer Breakdown & Modeling Logic:
+
+1. **Raw Layer (Bronze)**: 
+   - Acts as the landing zone for immutable raw data ingested from APIs (ENTSO-E, Frankfurter, SCB) and static lookup files. 
+   - *Note on `entsoe_generation_raw`*: Reshaped from wide to long format during ingestion to enforce a fixed relational schema before loading.
+
+2. **Staging Layer (Silver - Staging)**:
+   - Performs basic data health checks, deduplication, and initial casting (e.g., handling timestamps and null rows) using dbt staging models.
+
+3. **Intermediate Layer (Silver - Intermediate)**:
+   - **`fct_generation` & `fct_prices`**: Built as incremental models utilizing a `delete+insert` strategy to ensure **idempotency**. This is where exchange rates (`stg_fx_rates`) are applied to normalize all monetary values into a single currency.
+   - **`dim_nace_codes`**: Validates and cleans the quality of NACE industrial classification codes.
+
+4. **Core Layer (Gold - Core)**:
+   - Establishes a centralized **Star Schema** foundation. 
+   - Combines hourly electricity generation data and spot prices into a unified grain (`fct_energy_market_hourly`), mapped against industrial productivity indices (`fct_ipi`) and a standardized time dimension (`dim_date`).
+
+5. **Mart Layer (Gold - Mart)**:
+   - Exposes business-ready data products tailored directly for the serving layer (Evidence.dev).
+   - **`mart_energy_cost_simulation`**: Powers the dynamic ROI calculator for factory peak-shifting scenarios.
+   - **`mart_industrial_energy_correlation`**: Provides the analytical foundation to discover correlations between manufacturing output (IPI) and power grid dynamics.
+
+![DataFlowProgress](images/overview_pipeline-dbt.gif)
+
 
 ## Stack
 | Layer | Tool | Reason |
