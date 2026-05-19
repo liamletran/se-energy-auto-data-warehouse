@@ -110,15 +110,12 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 
 
 ## Definition of Done
-- [x] 100% dbt tests pass 
-- [x] Idempotent ingestion process
-- [x] Source freshness monitoring configured
-- [x] Live dashboard deployed at
-
+- [x] **Data Ingestion**: Hourly data from ENTSO-E, SCB, and Frankfurter APIs is successfully ingested into DuckDB with appropriate transformations (e.g., wide to long for generation data).
+- [x] **Data Modeling**: dbt models are implemented across Staging, Intermediate, Core, and Mart layers, with clear lineage and documentation.
 - [x] **Data Quality Enforced**: 100% of dbt schema and data quality tests pass on every deployment.
 - [x] **Idempotency Verified**: Destructive pipeline retries yield identical data volume and metrics.
 - [x] **Automated Observability**: Source freshness monitors and active Slack alerting webhooks configured.
-- [x] **Production Serving**: Code-driven live dashboard compiled and successfully deployed.
+- [x] **Production Serving**: Live dashboard compiled and successfully deployed.
 
 
 ## How to Run
