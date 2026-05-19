@@ -1,14 +1,15 @@
-# Nordic Energy Market Analytics Pipeline
+# Swedish Energy Prices and Automotive Industry Analytics
 
 > End-to-end analytics pipeline combining hourly ENTSO-E to model energy cost exposure for Swedish industrial manufacturers.
-
+> An end-to-end Analytics Pipeline correlating Nordic electricity price volatility (SE3) with the Swedish automotive supply chain index to model and optimize industrial energy cost exposure.
 
 ## Business Context
 
 The Nordic energy market is characterized by high volatility in electricity prices, driven by factors such as weather conditions, fuel costs, and grid constraints. For energy-intensive industries like automotive manufacturing, this volatility can lead to significant cost fluctuations and margin pressure. By building a data pipeline that ingests hourly market data, transforms it into actionable insights, and serves it through a dashboard, we can help manufacturers optimize their energy procurement strategies, identify cost-saving opportunities, and ultimately improve their financial performance in a competitive market.
 
 ## Live Dashboard
-[]
+The production BI layer is fully open-source and automatically deployed via version-controlled code.
+**[Access the Live Evidence.dev Dashboard]()**
 
 ## Architecture
 
@@ -24,16 +25,16 @@ dbt takes over to clean, join, and model the data into Staging, Intermediate, an
 
 3. **Orchestration**: 
 
-Dagster coordinates the entire flow, ensuring dbt runs only after successful ingestion.
+Dagster coordinates the entire flow, ensuring dbt runs only after successful ingestion. The pipeline is designed to be modular, scalable, and maintainable, allowing for easy addition of new data sources or transformation logic as business needs evolve.
 
-The pipeline is designed to be modular, scalable, and maintainable, allowing for easy addition of new data sources or transformation logic as business needs evolve.
+The following diagram illustrates the architecture of the pipeline:
 
 ![Pipeline](images/overview_pipeline-Page-1.gif)
 
 
 
 ## Data Lineage & Layers
-Below is the end-to-end data flow progress in the DuckDB analytical warehouse:
+Below is the end-to-end data flow progress diagram of the DuckDB analytical warehouse:
 
 ![DataFlowProgress](images/overview_pipeline-dbt.gif)
 
@@ -66,7 +67,7 @@ Below is the end-to-end data flow progress in the DuckDB analytical warehouse:
 | Layer | Tool | Reason |
 |---|---|---|
 | Orchestration | Dagster | Coordinates partitioned hourly assets, manages retry logic, and triggers Slack alerts |
-| Transformation | dbt + DuckDB + DBeaver | SQL-first, version-controlled modelling with a high-performance in-process OLAP warehouse |
+| Transformation | dbt + DuckDB | SQL-first, version-controlled modelling with a high-performance in-process OLAP warehouse |
 | Serving | Evidence.dev | Code-based, Markdown+SQL driven BI layer for rapid, git-integrated dashboard deployment |
 | Monitoring | Slack | Proactive, real-time alerting system linked with Dagster to minimize pipeline downtime |
 
@@ -74,12 +75,18 @@ Below is the end-to-end data flow progress in the DuckDB analytical warehouse:
 
 
 ## Data Sources
+
+The warehouse ingests and blends multi-grain datasets to evaluate macro-industrial impacts against grid dynamics:
+
 | Source | Frequency | Method |
 |---|---|---|
-| **ENTSO-E Transparency Platform** | Hourly | REST API | Raw electricity prices and generation mix for SE3 zone. |
-| **Manual Reference Data** | Static | dbt seed (CSV) | Domain-specific lookup tables: OEE proxies, unit conversions, and NACE industry codes. |
-| **SCB Industrial Production Index** | Monthly | REST API | Industrial Production Index (IPI) for manufacturing sectors. |
-| **Frankfurter.dev Exchange Rates** | Daily | REST API | EUR to SEK exchange rates for cost modeling. |
+| **ENTSO-E Transparency Platform** | Hourly | REST API - Python | Raw electricity prices and generation mix for SE3 zone. |
+| **SCB Industrial Production Index** | Monthly | REST API - Python | Industrial Production Index (IPI) for manufacturing sectors. |
+| **Frankfurter.dev Exchange Rates** | Daily | REST API - Python | EUR to SEK daily exchange rates for cost modeling. |
+| **Manual Domain Reference Data** | Static | dbt seed - CSV | Domain-specific lookup tables: OEE proxies, unit conversions, and NACE industry codes. |
+
+
+
 
 ## Key Design Decisions
 
@@ -96,12 +103,34 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 - **Proactive Monitoring**: Integration of Slack alerts with Dagster ensures that any pipeline failures are immediately communicated to the team, minimizing downtime and ensuring data reliability for decision-making.
 
 
+
+
+
 ## Definition of Done
 - [x] 100% dbt tests pass 
 - [x] Idempotent ingestion process
 - [x] Source freshness monitoring configured
 - [x] Live dashboard deployed at
 
-## How to Run
 
+
+
+## How to Run
+### Prerequisites
+- **Python 3.12+** (managed via `uv`)
+- **Node.js 22+** (required for the Evidence.dev compiler)
+
+### 1. Clone & Environment Setup
+Clone the repository and install the unified dependencies for both the data pipeline and the frontend dashboard:
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd NordEnergy-Auto-Pipeline
+
+# Install Python packages and setup virtual environment via uv
+uv sync
+
+# Install frontend BI dependencies
+cd dashboard
+npm install
 
