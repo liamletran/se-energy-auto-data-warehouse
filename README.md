@@ -2,12 +2,17 @@
 
 > An end-to-end Analytics Pipeline correlating hourly ENTSO-E with the Swedish automotive industrial production index (IPI) to model energy cost exposure for Swedish industrial automotive manufacturers and optimize industrial energy cost exposure.
 
+The following diagram illustrates the architecture of the pipeline:
+![Pipeline](images/overview_pipeline-Page-1.gif)
+
+
 ## Business Context
 
 The Nordic energy market is characterized by high volatility in electricity prices, driven by factors such as weather conditions, fuel costs, and grid constraints. For energy-intensive industries like automotive manufacturing, this volatility can lead to significant cost fluctuations and margin pressure. By building a data pipeline that ingests hourly market data, transforms it into actionable insights, and serves it through a dashboard, we can help manufacturers optimize their energy procurement strategies, identify cost-saving opportunities, and ultimately improve their financial performance in a competitive market.
 
 ## Live Dashboard
-The production BI layer is fully open-source and automatically deployed via version-controlled code.
+The production BI layer is fully open-source and automatically deployed via version-controlled code. You can interact with the live charts, filter by industrial sectors, and run energy cost simulations directly in your browser:
+
 **[Access the Live Evidence.dev Dashboard]()**
 
 ## Architecture
@@ -26,9 +31,6 @@ dbt takes over to clean, join, and model the data into Staging, Intermediate, an
 
 Dagster coordinates the entire flow, ensuring dbt runs only after successful ingestion. The pipeline is designed to be modular, scalable, and maintainable, allowing for easy addition of new data sources or transformation logic as business needs evolve.
 
-The following diagram illustrates the architecture of the pipeline:
-
-![Pipeline](images/overview_pipeline-Page-1.gif)
 
 
 
@@ -111,7 +113,10 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 - [x] Source freshness monitoring configured
 - [x] Live dashboard deployed at
 
-
+- [x] **Data Quality Enforced**: 100% of dbt schema and data quality tests pass on every deployment.
+- [x] **Idempotency Verified**: Destructive pipeline retries yield identical data volume and metrics.
+- [x] **Automated Observability**: Source freshness monitors and active Slack alerting webhooks configured.
+- [x] **Production Serving**: Code-driven live dashboard compiled and successfully deployed.
 
 
 ## How to Run
