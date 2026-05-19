@@ -32,7 +32,7 @@ Dagster coordinates the entire flow, ensuring dbt runs only after successful ing
 
 The pipeline is designed to be modular, scalable, and maintainable, allowing for easy addition of new data sources or transformation logic as business needs evolve.
 
-![Pipeline](images/overview_pipeline-Page-1.drawio.gif)
+![Pipeline](images/overview_pipeline-Page-1.gif)
 
 ## Stack
 | Layer | Tool | Reason |
