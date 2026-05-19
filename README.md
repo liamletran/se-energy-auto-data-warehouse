@@ -3,6 +3,8 @@
 > An end-to-end Analytics Pipeline correlating hourly ENTSO-E with the Swedish automotive industrial production index (IPI) to model energy cost exposure for Swedish industrial automotive manufacturers and optimize industrial energy cost exposure.
 
 The following diagram illustrates the architecture of the pipeline:
+
+
 ![Pipeline](images/overview_pipeline-Page-1.gif)
 
 
