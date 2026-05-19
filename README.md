@@ -13,7 +13,7 @@ The following diagram illustrates the architecture of the pipeline:
 The Nordic energy market is characterized by high volatility in electricity prices, driven by factors such as weather conditions, fuel costs, and grid constraints. For energy-intensive industries like automotive manufacturing, this volatility can lead to significant cost fluctuations and margin pressure. By building a data pipeline that ingests hourly market data, transforms it into actionable insights, and serves it through a dashboard, we can help manufacturers optimize their energy procurement strategies, identify cost-saving opportunities, and ultimately improve their financial performance in a competitive market.
 
 ## Live Dashboard
-The production BI layer is fully open-source and automatically deployed via version-controlled code. You can interact with the live charts, filter by industrial sectors, and run energy cost simulations directly in your browser:
+The production BI layer is fully open-source and automatically deployed via version-controlled code. The live dashboard is interacted with the live charts, filter by industrial sectors, and run energy cost simulations directly in the browser:
 
 **[Access the Live Evidence.dev Dashboard]()**
 
@@ -106,7 +106,17 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 - **Proactive Monitoring**: Integration of Slack alerts with Dagster ensures that any pipeline failures are immediately communicated to the team, minimizing downtime and ensuring data reliability for decision-making.
 
 
+## Monitoring & Alerting
+To ensure high data availability and proactive pipeline health, I implemented a robust alerting system for failure response:
+- **Integration**: Linked Dagster's default status sensors with a Slack incoming webhook.
+- **Trigger**: Automated alerts are dispatched instantly whenever an ingestion asset, dbt model materialization, or a partition run fails.
+- **Contextual Notifications**: Alerts include critical failure context—job name, timestamp, and direct links to Dagster logs for accelerated Mean Time To Repair (MTTR).
 
+### Automated Failure Alert Example
+Below is a real-time example of a contextual failure notification dispatched to the `#monitoring` Slack channel during a dbt run failure:
+
+![Automated failure alert example showing critical details like the failed asset name and error links](images/slack_failure_alert.png)
+*This structured alert minimizes operational downtime by providing the on-call engineer with immediate context to begin diagnostics.*
 
 
 ## Definition of Done
@@ -127,7 +137,7 @@ DuckDB is used as a local analytical warehouse that Supports SQL and integrates 
 Clone the repository and install the unified dependencies for both the data pipeline and the frontend dashboard:
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone <repo-url>
 cd NordEnergy-Auto-Pipeline
 
 # Install Python packages and setup virtual environment via uv
