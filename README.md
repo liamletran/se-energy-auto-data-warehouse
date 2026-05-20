@@ -5,7 +5,7 @@
 The following diagram illustrates the architecture of the pipeline:
 
 
-![Pipeline](images/overview_pipeline-Page-1.gif)
+![Pipeline](images/overview_pipeline.gif)
 
 
 ## Business Context
@@ -39,7 +39,7 @@ Dagster coordinates the entire flow, ensuring dbt runs only after successful ing
 ## Data Lineage & Layers
 Below is the end-to-end data flow progress diagram of the DuckDB analytical warehouse:
 
-![DataFlowProgress](images/overview_pipeline-dbt.gif)
+![DataFlowProgress](images/dbt-data-flow-progress.gif)
 
 ### Layer Breakdown & Modeling Logic:
 
