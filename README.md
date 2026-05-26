@@ -125,6 +125,8 @@ Below is a real-time example of a contextual failure notification dispatched to 
 ## Dashboard Interpretation Guide
 
 ### Market Overview
+![Dashboard Overview](images/dashboard/1.png)
+
 
 **KPI Cards (top-left):**
 - **Maximum Price (2.23K SEK/MWh):** Peak price recorded since 2019, occurring during morning demand surges in winter months
@@ -145,10 +147,10 @@ Hydro dominates at 46.38%, followed by Wind Onshore (22.79%) and Nuclear (22.34%
 - SE1: 583 SEK/MWh — lowest, northernmost hydro corridor
 
 
-![Dashboard Overview](images/dashboard/1.png)
-
 
 ### Energy Cost Optimization: Peak Shifting Simulation  
+
+![Dashboard Cost Optimization](images/dashboard/2.png)
 
 **Cost Reduction Breakdown — Waterfall Chart:**
 Green bars represent months where shifting 30% of flexible load to off-peak hours (bottom price percentile) yields measurable cost reduction versus the all-hour average baseline.
