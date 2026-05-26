@@ -123,7 +123,7 @@ Below is a real-time example of a contextual failure notification dispatched to 
 
 
 ## Dashboard Interpretation Guide
-
+[Click here for the official dashboard report](dashboard_swedish_energy_price_vs_automotive_industry.pdf)
 ### Market Overview
 
 ![Dashboard Overview](images/dashboard/1.png)
