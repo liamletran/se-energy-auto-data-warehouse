@@ -125,8 +125,8 @@ Below is a real-time example of a contextual failure notification dispatched to 
 ## Dashboard Interpretation Guide
 
 ### Market Overview
-![Dashboard Overview](images/dashboard/1.png)
 
+![Dashboard Overview](images/dashboard/1.png)
 
 **KPI Cards (top-left):**
 - **Maximum Price (2.23K SEK/MWh):** Peak price recorded since 2019, occurring during morning demand surges in winter months
@@ -150,14 +150,19 @@ Hydro dominates at 46.38%, followed by Wind Onshore (22.79%) and Nuclear (22.34%
 
 ### Energy Cost Optimization: Peak Shifting Simulation  
 
-![Dashboard Cost Optimization](images/dashboard/2.png)
 
 **Cost Reduction Breakdown — Waterfall Chart:**
+![Dashboard Cost Optimization](images/dashboard/2.png)
+
+
 Green bars represent months where shifting 30% of flexible load to off-peak hours (bottom price percentile) yields measurable cost reduction versus the all-hour average baseline.
 
 Red bars (2021-2022) reflect the European energy crisis period when sustained price spikes eliminated the typical peak/off-peak differential across all hours simultaneously — a market condition where load shifting becomes ineffective regardless of scheduling strategy.
 
+
 **Monthly Energy Cost: Standard vs Off-Peak Shifted Operations:**
+![Dashboard Monthly Energy Cost](images/dashboard/4.png)
+
 Each panel shows one bidding zone. The 2021-2022 spike is visible across all four zones, with SE3 and SE4 showing the most pronounced baseline-to-optimized gap in normal market conditions.
 
 **Estimated Cost Saving by Bidding Zone (%):**
@@ -172,6 +177,9 @@ SE3 and SE4 show higher saving potential precisely because their larger peak/off
 
 
 ### Industrial Correlation
+
+![Dashboard Industrial Correlation](images/dashboard/5.png)
+
 **Price Sensitivity of Automotive Sector — Scatter Chart:**
 Each dot represents one NACE industry sector in one calendar month, plotted against the average electricity price for that month. Three sectors are tracked:
 - **NACE 28:** Machinery and equipment manufacturing
