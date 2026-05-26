@@ -131,7 +131,7 @@ Below is a real-time example of a contextual failure notification dispatched to 
 **KPI Cards (top-left):**
 - **Maximum Price (2.23K SEK/MWh):** Peak price recorded since 2019, occurring during morning demand surges in winter months
 - **Average Price (781.89 SEK/MWh):** Long-run mean across all four bidding zones and all hours since 2019
-- **Minimum Price (-168.37 SEK/MWh):** Negative prices occur during renewable oversupply periods — grid operators effectively pay consumers to absorb excess generation
+- **Minimum Price (-168.37 SEK/MWh):** Negative prices occur during renewable oversupply periods, grid operators effectively pay consumers to absorb excess generation
 - **Standard Deviation (472.25 SEK/MWh):** Represents ~60% of the average price, confirming extreme hourly volatility in the Nordic electricity market
 
 **Electricity Price Trend (SE1-SE4):**
@@ -193,10 +193,8 @@ Left axis (bars): Average monthly electricity price in SEK/MWh.
 Right axis (line): Industrial Production Index (IPI, base 2021=100).
 
 The chart covers March 2023 to March 2026. Notable observations:
-- Price spikes in late 2025 (1,031-1,057 SEK/MWh) coincide with 
-  IPI values declining toward 95-106 range
-- Low-price periods (172-204 SEK/MWh in 2024) correspond with IPI 
-  recovering toward 112-125
+- Price spikes in late 2025 (1,031-1,057 SEK/MWh) coincide with IPI values declining toward 95-106 range
+- Low-price periods (172-204 SEK/MWh in 2024) correspond with IPI recovering toward 112-125
 
 This pattern is consistent with the hypothesis that sustained high energy costs create headwinds for energy-intensive manufacturing output, though multiple macroeconomic factors contribute to IPI 
 movements simultaneously.
@@ -224,7 +222,7 @@ This dashboard presents **descriptive and diagnostic analytics** — it identifi
 ## Definition of Done
 - [x] **Data Ingestion**: Hourly data from ENTSO-E, SCB, and Frankfurter APIs is successfully ingested into DuckDB with appropriate transformations (e.g., wide to long for generation data).
 - [x] **Data Modeling**: dbt models are implemented across Staging, Intermediate, Core, and Mart layers, with clear lineage and documentation.
-- [x] **Data Quality Enforced**: 100% of dbt schema and data quality tests pass on every deployment.
+- [x] **Data Quality Enforced**: All dbt schemas and data quality tests pass successfully.
 - [x] **Idempotency Verified**: Destructive pipeline retries yield identical data volume and metrics.
 - [x] **Automated Observability**: Source freshness monitors and active Slack alerting webhooks configured.
 - [x] **Production Serving**: Dashboard snapshot is successfully obtained and included in this repository.
