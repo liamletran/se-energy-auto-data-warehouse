@@ -1,5 +1,5 @@
 import pandas as pd
-from dagster import asset, AssetExecutionContext
+from dagster import asset, AssetExecutionContext, Config
 from dagster_duckdb import DuckDBResource
 from ingestion.clients.entsoe_client import ENTSOEClient
 
@@ -7,7 +7,12 @@ from ingestion.clients.entsoe_client import ENTSOEClient
 client = ENTSOEClient()
 
 
-def _window() -> tuple[pd.Timestamp, pd.Timestamp]:
+class ENTSOEAnaConfig(Config):
+    start_date: str = None
+    end_date: str = None
+
+
+def _get_default_window() -> tuple[pd.Timestamp, pd.Timestamp]:
     end = pd.Timestamp.now(tz="Europe/Stockholm").normalize()
     start = end - pd.Timedelta(days=2)
     return start, end
@@ -36,11 +41,22 @@ def _ensure_entsoe_tables(con):
 
 @asset(group_name="entsoe")
 def entsoe_generation_raw(
-    context: AssetExecutionContext, duckdb: DuckDBResource
+    context: AssetExecutionContext,
+    duckdb: DuckDBResource,
+    config: ENTSOEAnaConfig,
 ) -> None:
-    start, end = _window()
-    all_frames = []
 
+    if config.start_date and config.end_date:
+        context.log.info(
+            f"BACKFILL MODE IS ACTIVATED: {config.start_date} -> {config.end_date}"
+        )
+        start = pd.Timestamp(config.start_date, tz="Europe/Stockholm")
+        end = pd.Timestamp(config.end_date, tz="Europe/Stockholm")
+    else:
+        context.log.info("DAILY RUN MODE IS ACTIVATED")
+        start, end = _get_default_window()
+
+    all_frames = []
     for zone in client.bidding_zones.keys():
         df = client.fetch_generation(start=start, end=end, zone=zone)
         if df.empty:
@@ -53,7 +69,6 @@ def entsoe_generation_raw(
         raise RuntimeError("No generation data returned.")
 
     combined = pd.concat(all_frames, ignore_index=True)
-
     combined = combined[
         [
             "datetime",
@@ -70,9 +85,7 @@ def entsoe_generation_raw(
             "DELETE FROM entsoe_generation_raw WHERE datetime >= ? AND datetime < ?",
             [start, end],
         )
-
         con.execute("INSERT INTO entsoe_generation_raw BY NAME SELECT * FROM combined")
-
         row_count = con.execute(
             "SELECT COUNT(*) FROM entsoe_generation_raw WHERE datetime >= ? AND datetime < ?",
             [start, end],
@@ -82,10 +95,16 @@ def entsoe_generation_raw(
 
 
 @asset(group_name="entsoe")
-def entsoe_prices_raw(context: AssetExecutionContext, duckdb: DuckDBResource) -> None:
-    start, end = _window()
-    all_frames = []
+def entsoe_prices_raw(
+    context: AssetExecutionContext, duckdb: DuckDBResource, config: ENTSOEAnaConfig
+) -> None:
+    if config.start_date and config.end_date:
+        start = pd.Timestamp(config.start_date, tz="Europe/Stockholm")
+        end = pd.Timestamp(config.end_date, tz="Europe/Stockholm")
+    else:
+        start, end = _get_default_window()
 
+    all_frames = []
     for zone in client.bidding_zones.keys():
         df = client.fetch_day_ahead_prices(start=start, end=end, zone=zone)
         if df.empty:
@@ -94,9 +113,7 @@ def entsoe_prices_raw(context: AssetExecutionContext, duckdb: DuckDBResource) ->
 
     if not all_frames:
         raise RuntimeError("No price data returned.")
-
     combined = pd.concat(all_frames, ignore_index=True)
-
     combined = combined[["datetime", "price_eur_mwh", "bidding_zone", "ingested_at"]]
 
     with duckdb.get_connection() as con:
@@ -105,9 +122,7 @@ def entsoe_prices_raw(context: AssetExecutionContext, duckdb: DuckDBResource) ->
             "DELETE FROM entsoe_prices_raw WHERE datetime >= ? AND datetime < ?",
             [start, end],
         )
-
         con.execute("INSERT INTO entsoe_prices_raw BY NAME SELECT * FROM combined")
-
         row_count = con.execute(
             "SELECT COUNT(*) FROM entsoe_prices_raw WHERE datetime >= ? AND datetime < ?",
             [start, end],

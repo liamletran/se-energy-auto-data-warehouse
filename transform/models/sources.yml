@@ -5,16 +5,31 @@ sources:
     tables:
       - name: generation_raw
         identifier: entsoe_generation_raw
-
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
       - name: prices_raw
         identifier: entsoe_prices_raw
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 2, period: day}
 
       - name: ipi_raw
         identifier: scb_ipi_raw
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 4, period: day}
+          error_after: {count: 8, period: day}
 
       - name: fx_raw
         identifier: fx_rates_raw
-
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 4, period: day}
+          error_after: {count: 8, period: day}
+    
 
   #- name: dagster
    # tables:
