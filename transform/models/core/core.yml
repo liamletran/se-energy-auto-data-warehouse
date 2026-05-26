@@ -1,0 +1,12 @@
+version: 2
+models:
+ - name: fct_ipi
+   description: "Fact table for the Swedish Industrial Production Index (IPI)"
+   columns:
+     - name: nace_code
+       description: "The NACE code for the industry sector"
+       tests:
+            - not_null
+            - relationships: 
+                to: dim_nace_codes
+                field: nace_code
