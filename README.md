@@ -12,10 +12,6 @@ The following diagram illustrates the architecture of the pipeline:
 
 The Nordic energy market is characterized by high volatility in electricity prices, driven by factors such as weather conditions, fuel costs, and grid constraints. For energy-intensive industries like automotive manufacturing, this volatility can lead to significant cost fluctuations and margin pressure. By building a data pipeline that ingests hourly market data, transforms it into actionable insights, and serves it through a dashboard, we can help manufacturers optimize their energy procurement strategies, identify cost-saving opportunities, and ultimately improve their financial performance in a competitive market.
 
-## Live Dashboard
-The production BI layer is fully open-source and automatically deployed via version-controlled code. The live dashboard is interacted with the live charts, filter by industrial sectors, and run energy cost simulations directly in the browser:
-
-**[Access the Live Evidence.dev Dashboard]()**
 
 ## Architecture
 
